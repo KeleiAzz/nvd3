@@ -10,7 +10,7 @@ nv.interactiveGuideline = function() {
     "use strict";
 
     var tooltip = nv.models.tooltip();
-    tooltip.duration(0).hideDelay(0).hidden(false);
+    tooltip.duration(0).hideDelay(0)._isInteractiveLayer(true).hidden(false);
 
     //Public settings
     var width = null;
@@ -141,6 +141,7 @@ nv.interactiveGuideline = function() {
             }
 
             svgContainer
+                .on("touchmove",mouseHandler)
                 .on("mousemove",mouseHandler, true)
                 .on("mouseout" ,mouseHandler,true)
                 .on("dblclick" ,mouseHandler)

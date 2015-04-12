@@ -31,6 +31,8 @@ nv.models.pie = function() {
         , dispatch = d3.dispatch('chartClick', 'elementClick', 'elementDblClick', 'elementMouseover', 'elementMouseout', 'elementMousemove', 'renderEnd')
         ;
 
+    var arcs = [];
+    var arcsOver = [];
 
     //============================================================
     // chart function
@@ -84,9 +86,8 @@ nv.models.pie = function() {
                 });
             });
 
-            var arcs = [];
-            var arcsOver = [];
-
+            arcs = [];
+            arcsOver = [];
             for (var i = 0; i < data[0].length; i++) {
 
                 var arc = d3.svg.arc().outerRadius(arcsRadiusOuter[i]);
@@ -298,16 +299,24 @@ nv.models.pie = function() {
                         var label = '';
                         if (!d.value || percent < labelThreshold) return '';
 
-                        switch (labelType) {
-                            case 'key':
-                                label = getX(d.data);
-                                break;
-                            case 'value':
-                                label = valueFormat(getY(d.data));
-                                break;
-                            case 'percent':
-                                label = valueFormat(percent);
-                                break;
+                        if(typeof labelType === 'function') {
+                            label = labelType(d, i, {
+                                'key': getX(d.data),
+                                'value': getY(d.data),
+                                'percent': valueFormat(percent)
+                            });
+                        } else {
+                            switch (labelType) {
+                                case 'key':
+                                    label = getX(d.data);
+                                    break;
+                                case 'value':
+                                    label = valueFormat(getY(d.data));
+                                    break;
+                                case 'percent':
+                                    label = valueFormat(percent);
+                                    break;
+                            }
                         }
                         return label;
                     })
